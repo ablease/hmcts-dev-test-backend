@@ -1,21 +1,42 @@
 package uk.gov.hmcts.reform.dev.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.reform.dev.models.ExampleCase;
+import org.springframework.web.bind.annotation.*;
+import uk.gov.hmcts.reform.dev.models.Case;
+import uk.gov.hmcts.reform.dev.services.CaseService;
 
-import java.time.LocalDateTime;
-
-import static org.springframework.http.ResponseEntity.ok;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
+@RequestMapping("/cases")
 public class CaseController {
 
-    @GetMapping(value = "/get-example-case", produces = "application/json")
-    public ResponseEntity<ExampleCase> getExampleCase() {
-        return ok(new ExampleCase(1, "ABC12345", "Case Title",
-                                  "Case Description", "Case Status", LocalDateTime.now()
-        ));
+    @Autowired
+    private CaseService caseService;
+
+    @GetMapping
+    public List<Case> getAllCases() {
+        return caseService.getAllCases();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Case> getCaseById(@PathVariable Long id) {
+        Optional<Case> getCase = caseService.getCaseById(id);
+        return getCase.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping(consumes = "application/json")
+    public Case createCase(@RequestBody Case newCase) {
+        return caseService.createCase(newCase);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCase(@PathVariable Long id) {
+        caseService.deleteCase(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // @PutMapping
 }
