@@ -8,3 +8,21 @@ can run the service in IntelliJ (or your IDE of choice) or however you normally 
 
 There is an example endpoint provided to retrieve an example of a case. You are free to add/remove fields as you
 wish.
+
+
+# Setup Notes
+
+Create a postgres database with the following credentials and add to application.yaml
+```yaml
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: alex
+    password: alex
+```
+
+Start the application with IntelliJ or with gradle
+
+```angular2html
+./gradlew run
+```
